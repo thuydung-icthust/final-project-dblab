@@ -1,0 +1,10 @@
+#footer
+{
+    height: var(--footer-height);
+    /* margin-top: 2000vh; */
+    margin-top: auto;
+    flex-shrink: 0;
+    background-color: var(--navbar-bg-color);
+    color: var(--navbar-text-color);
+    box-shadow: 0 2px 4px rgba(30, 107, 207, 0.15);
+}
