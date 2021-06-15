@@ -18,7 +18,7 @@ class CustomerController extends VanillaController {
                 $username = trim($_POST["username"]);
                 $password = trim($_POST["password"]);
             }
-
+  
             if (empty($username_err) && empty($password_err)) {
                 //login
                 $username = $this->Customer->sanitize($username);
@@ -57,6 +57,45 @@ class CustomerController extends VanillaController {
         }
         header("location: /customer/login");
         exit();
+    }
+
+    function orderList($id = null){
+        session_start();
+        if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
+            if (isset($_SESSION["isCustomer"]) && $_SESSION["isCustomer"] === true) {
+                // do work
+                
+            } else {
+                header("Location: /");
+                exit();
+            }
+        } else {
+            header("Location: /customer/login");
+            exit();
+        }
+        $id = $_SESSION['id'];
+        $orders = $this->Customer->getOrderList($id);
+        $this->setTemplateVariable('orders', $orders);
+        return true;
+    }
+
+    function orderDetail($id)
+    {
+        session_start();
+        if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
+            if (isset($_SESSION["isCustomer"]) && $_SESSION["isCustomer"] === true) {
+                // do work
+                $items = $this->Customer->getOrderDetail($id);
+                $this->setTemplateVariable('items', $items);
+                return true;
+            } else {
+                header("Location: /");
+                exit();
+            }
+        } else {
+            header("Location: /customer/login");
+            exit();
+        }
     }
 
     function register() {
