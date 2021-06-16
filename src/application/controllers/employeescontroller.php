@@ -156,21 +156,36 @@ class EmployeesController extends VanillaController
             exit();
         }
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if (isset($_POST['orders'])) {
-                $orders = $_POST['orders'];
-                foreach ($orders as $order) {
-                    // echo "$order";
-                    $query = "UPDATE `orders` SET `status` = 1 WHERE `order_id` = {$order}";
-                    // echo "$query";
-                    $update = $this->Employee->custom($query);
-                    $message = '';
-                    if ($update) {
-                        $message = 'Order processing completed!';
-                    } else {
-                        $message = 'Order processing failed';
+            if (isset($_POST['order'])) {
+                $order = $_POST['order'];
+                // echo "$order";
+                $query = "UPDATE `orders` SET `status` = 1 WHERE `order_id` = {$order}";
+                // echo "$query";
+                $update = $this->Employee->custom($query);
+                //decrease the ingredient in the order
+                if (isset($_POST['ingredient_id']) && isset($_POST['ingredient_quantity'])) {
+                    $ings = $_POST['ingredient_id'];
+                    $ing_quantities = $_POST['ingredient_quantity'];
+                    foreach ($ings as $k => $ing) {
+                        $quant = $ing_quantities[$k];
+                        $query = "UPDATE `ingredients` SET `quantity` = `quantity` - $quant WHERE `ingredient_id` = {$ing}";
+                        // echo "$query";
+                        $update = $this->Employee->custom($query);
+                        if ($update)
+                            continue;
+                        else {
+                            http_response_code(500);
+                            return false;
+                        }
                     }
-                    $this->setTemplateVariable('message', $message);
                 }
+                $message = '';
+                if ($update) {
+                    $message = 'Order processing completed!';
+                } else {
+                    $message = 'Order processing failed';
+                }
+                $this->setTemplateVariable('message', $message);
             }
         }
         $id = $_SESSION['id'];
@@ -190,9 +205,14 @@ class EmployeesController extends VanillaController
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
             if (isset($_SESSION["isEmployee"]) && $_SESSION["isEmployee"] === true) {
-                // do work
+                // get items for the order
                 $items = $this->Employee->getOrderDetail($id);
+                // get igredients for the order
+                $ingredients = $this->Employee->getOrderIngredients($id);
+
+                //sum up
                 $this->setTemplateVariable('items', $items);
+                $this->setTemplateVariable('ingredients', $ingredients);
                 return true;
             } else {
                 header("Location: /");

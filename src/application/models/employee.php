@@ -1,7 +1,9 @@
 <?php
 
-class Employee extends VanillaModel {
-    public function importRequest($employee_id, $items, $prices) {
+class Employee extends VanillaModel
+{
+    public function importRequest($employee_id, $items, $prices)
+    {
         $query = "CALL add_new_import($employee_id, @req_id);";
         $result = $this->custom($query);
         if (!$result) {
@@ -43,12 +45,29 @@ class Employee extends VanillaModel {
     }
 
 
-    public function getOrderDetail($id) {
+    public function getOrderDetail($id)
+    {
         $id = $this->sanitize($id);
         $items = $this->custom("SELECT * FROM
         (SELECT products.product_id as `product_id`, `order_id`, `quantity`, `price`, `name`  FROM `order_items`
             INNER JOIN `products` ON (order_items.product_id = products.product_id)
             WHERE `order_id` = $id) AS order_detail;");
         return $items;
+    }
+
+    public function getOrderIngredients($id)
+    {
+        $id = $this->sanitize($id);
+        $query = "SELECT * FROM (SELECT ing.ingredient_id, ing.name, SUM(pi.ingredient_quantity * ord.quantity) AS `quantity`, ing.stock_quantity FROM 
+        (SELECT product_id, order_id, quantity FROM order_items WHERE order_id=$id) ord
+        INNER JOIN 
+        (SELECT product_id, ingredient_id, quantity AS `ingredient_quantity` FROM product_include) pi
+        ON pi.product_id = ord.product_id 
+        INNER JOIN (SELECT `name`, quantity AS `stock_quantity`, ingredient_id FROM ingredients) ing 
+        ON pi.ingredient_id = ing.ingredient_id 
+        GROUP BY pi.ingredient_id) AS order_ingredient;";
+        // echo $query;
+        $ingres = $this->custom($query);
+        return $ingres;
     }
 }
