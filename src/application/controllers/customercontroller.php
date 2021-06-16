@@ -1,6 +1,8 @@
 <?php
-class CustomerController extends VanillaController {
-    function login() {
+class CustomerController extends VanillaController
+{
+    function login()
+    {
         session_start();
 
         // Define variables and initialize with empty values
@@ -18,7 +20,7 @@ class CustomerController extends VanillaController {
                 $username = trim($_POST["username"]);
                 $password = trim($_POST["password"]);
             }
-  
+
             if (empty($username_err) && empty($password_err)) {
                 //login
                 $username = $this->Customer->sanitize($username);
@@ -45,7 +47,8 @@ class CustomerController extends VanillaController {
         return true;
     }
 
-    function logOut() {
+    function logOut()
+    {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
             unset($_SESSION["loggedIn"]);
@@ -59,12 +62,13 @@ class CustomerController extends VanillaController {
         exit();
     }
 
-    function orderList($id = null){
+    function orderList($id = null)
+    {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
             if (isset($_SESSION["isCustomer"]) && $_SESSION["isCustomer"] === true) {
                 // do work
-                
+
             } else {
                 header("Location: /");
                 exit();
@@ -72,6 +76,24 @@ class CustomerController extends VanillaController {
         } else {
             header("Location: /customer/login");
             exit();
+        }
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (isset($_POST['orders'])) {
+                $orders = $_POST['orders'];
+                foreach ($orders as $order) {
+                    // echo "$order";
+                    $query = "DELETE FROM `orders` WHERE `order_id` = {$order}";
+                    // echo "$query";
+                    $update = $this->Customer->custom($query);
+                    $message = '';
+                    if ($update) {
+                        $message = 'Order canceling completed!';
+                    } else {
+                        $message = 'Order canceling failed';
+                    }
+                    $this->setTemplateVariable('message', $message);
+                }
+            }
         }
         $id = $_SESSION['id'];
         $orders = $this->Customer->getOrderList($id);
@@ -98,7 +120,8 @@ class CustomerController extends VanillaController {
         }
     }
 
-    function register() {
+    function register()
+    {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
             header("location: /");

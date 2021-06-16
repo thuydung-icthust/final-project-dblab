@@ -2,7 +2,8 @@
 <?php echo $html->includeCss("admin"); ?>
 <?php echo $html->includeCss("orders"); ?>
 <?php
-function console_log($output, $with_script_tags = true) {
+function console_log($output, $with_script_tags = true)
+{
     $js_code = 'console.log(' . json_encode($output, JSON_HEX_TAG) .
         ');';
     if ($with_script_tags) {
@@ -23,35 +24,39 @@ function console_log($output, $with_script_tags = true) {
                 Let see your order list
             </p>
         </div>
-        <table id="orders" class="plr-15 mt-15 shadow-box">
-            <tr>
-                <th>Order ID</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Details</th>
-            </tr>
-            <?php
-            
-            foreach ($orders as $order) {
-                echo "<tr>";
-                echo "<td>{$order['Order']['order_id']}</td>";
-                echo "<td>{$order['Order']['created_at']}</td>";
-                if($order['Order']['status']==1)
-                echo "<td>Done</td>";
-                else echo"<td>Undone</td>";
-                echo "<td class='see-more'>";
-                echo "<a href='/customer/orderDetail/{$order['Order']['order_id']}'>";
-                echo "See more";
-                echo "</a>";
-                echo "</td>";
-                echo "</tr>";
-            }
-        ?>
-        </table>
+        <form method="POST">
+            <table class="orders-table" class="plr-15 mt-15 shadow-box">
+                <tr>
+                    <th>Cancel order</th>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+                <?php
 
-        
-
+                foreach ($orders as $order) {
+                    echo "<tr>";
+                    if ($order['Order']['status'] == 1)
+                        echo "<td><input type='checkbox' disabled=true value='{$order['Order']['order_id']}' name='orders[]'></td>";
+                    else
+                        echo "<td><input type='checkbox' value='{$order['Order']['order_id']}' name='orders[]'></td>";
+                    echo "<td>{$order['Order']['order_id']}</td>";
+                    echo "<td>{$order['Order']['created_at']}</td>";
+                    if ($order['Order']['status'] == 1)
+                        echo "<td>Done</td>";
+                    else echo "<td>Undone</td>";
+                    echo "<td class='see-more'>";
+                    echo "<a href='/customer/orderDetail/{$order['Order']['order_id']}'>";
+                    echo "See more";
+                    echo "</a>";
+                    echo "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </table>
+            <br><input type="submit" value="Cancel">
+            <input type="reset" value="Reset" class="btn btn-secondary">
         </form>
     </div>
 </div>
-    
