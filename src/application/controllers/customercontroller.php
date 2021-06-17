@@ -1,7 +1,7 @@
 <?php
 class CustomerController extends VanillaController
 {
-    function login()
+    public function login()
     {
         session_start();
 
@@ -47,7 +47,7 @@ class CustomerController extends VanillaController
         return true;
     }
 
-    function logOut()
+    public function logOut()
     {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
@@ -62,7 +62,7 @@ class CustomerController extends VanillaController
         exit();
     }
 
-    function orderList($id = null)
+    public function orderList($id = null)
     {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
@@ -101,7 +101,7 @@ class CustomerController extends VanillaController
         return true;
     }
 
-    function orderDetail($id)
+    public function orderDetail($id)
     {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
@@ -120,7 +120,7 @@ class CustomerController extends VanillaController
         }
     }
 
-    function register()
+    public function register()
     {
         session_start();
         if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {

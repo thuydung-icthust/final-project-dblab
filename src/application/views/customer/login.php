@@ -1,8 +1,7 @@
 <div class="body-container large-p-base">
     <div class="shadow-box p-base round-border">
         <form action="/customer/login" method="post">
-            <h2>Login form</h2>
-            <br>
+            <h3 class="text-center">Login form</h3>
             <p class="highlight text-center">Please enter your username and password to continue</p>
             <br>Username: <input text type="text" size="30" maxlength="50" minlength="3" name="username">
             <br>Password: <input text type="password" size="30" maxlength="30" minlength="3" name="password">
@@ -15,7 +14,7 @@
             <a href="/customer/register">Don't have an account? Click here to join with us!</a>
             <? if (isset($err)) {
                 echo '<br>';
-                echo "<p style='color:red;'>$err</p>"; 
+                echo "<p style='color:red;'>$err</p>";
             }?>
         </form>
     </div>
