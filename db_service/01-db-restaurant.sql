@@ -785,4 +785,4 @@ UNLOCK TABLES;
 CREATE INDEX category_idx USING BTREE ON `products` (`category`);
 CREATE INDEX status_idx USING HASH ON `importment_requests` (`status`);
 CREATE INDEX ord_clientid_idx USING BTREE ON `orders` (`customer_id`);
-CREATE INDEX ord_status_empid_idx USING BTREE ON `orders` ((`employee_id`, `status`));
+CREATE INDEX ord_status_empid_idx USING BTREE ON `orders` (`employee_id`, `status`);

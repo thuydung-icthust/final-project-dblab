@@ -45,4 +45,5 @@ CREATE PROCEDURE add_new_import(IN _employee_id INT, OUT _req_id INT)
     SELECT LAST_INSERT_ID() INTO _req_id;
     END$$
 
+
 DELIMITER ;
