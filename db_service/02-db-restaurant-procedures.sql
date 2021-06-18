@@ -46,4 +46,27 @@ CREATE PROCEDURE add_new_import(IN _employee_id INT, OUT _req_id INT)
     END$$
 
 
+CREATE PROCEDURE add_ingredient_stock(IN _request_id INT)
+    BEGIN
+    DECLARE _ingredient_id INT;
+    DECLARE _quantity INT;
+    DECLARE _finished INT DEFAULT 0;
+    DECLARE _curs CURSOR FOR SELECT ingredient_id, quantity FROM import_items WHERE request_id= _request_id;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET _finished = 1;
+
+    OPEN _curs;
+    addIngredient: LOOP
+    FETCH _curs INTO _ingredient_id, _quantity;
+    IF _finished = 1 THEN
+        LEAVE addIngredient;
+    END IF;
+    -- actual add ingredient
+    UPDATE ingredients SET quantity = quantity + _quantity WHERE ingredient_id = _ingredient_id;
+
+    END LOOP addIngredient;
+
+    CLOSE _curs;
+
+    END$$
+
 DELIMITER ;
